@@ -30,6 +30,18 @@ if(!require(ltm)){
     install.packages("ltm")
     library(ltm)
 }
+if(!require(eRm)){
+  install.packages("eRm")
+  library(eRm)
+}
+if(!require(jmv)){
+  install.packages("jmv")
+  library(jmv)
+}
+if(!require(surveymv)){
+  install.packages("surveymv")
+  library(surveymv)
+}
 
 
 #Neuromyths
@@ -205,21 +217,15 @@ sjstats::anova_stats(car::Anova(attitude_partB, type = 2))
 fig1B <- ggplot(LAPN_attitudes_scores_partB, aes(x = Gr, y = z1, colour = AP)) + geom_boxplot(outlier.shape = NA) + geom_point(aes(color = AP), position = position_jitterdodge()) + ylim(-3, 3) + labs(colour = "Assessment period", x = "Group", y = "Factor score (z)", title = "Science Attitude Score, Part B", subtitle = "Views on scientists", tag = "B", caption = "Factor scores calculated with a graded response model") #plot
 
 
-
-car::Anova(attitude_partA, type = 2)
-sjstats::anova_stats(car::Anova(attitude_partA, type = 2))
-aovSAS_partA <- broom::tidy(emmeans::pmmeans(attitude_partA, "AP", by = "Gr"))
-ggplot(data = aovSAS, aes(x = AssessmentPeriod, y = estimate, group = Group, color = Group, fill = Group)) + geom_point(shape = 18, size = 4) + geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) + geom_line(size = 1) + ylim(0, 100) + ggrepel::geom_label_repel(aes(label = round(estimate, 2)), nudge_x = -.35, color = "black") + geom_jitter(data = escores, aes(y = ScienceAttitudeScore, x = AssessmentPeriod, group = Group, color = Group), width = 0.2) + xlab("Assessment period") + ylab("Science Attitude Score") + ggtitle(expression(eta ^2 ~"(Group) = 0.021," ~ eta ^2 ~"(Assessment period) = 0.065," ~ eta ^2 ~"(int.) = 0.11")) + theme(plot.title = element_text(size = 10))
-
 #Analyze neuromyths data
-nocov <- aov(data = LAPN_attitudes_partA, PP ~ Gr * AP) #Without co-variate
+nocov <- aov(data = LAPN_attitudes_scores_partA, PP ~ Gr * AP) #Without co-variate
 car::Anova(nocov, type = 2) #Type II ANOVA
 sjstats::anova_stats(car::Anova(nocov, type = 2)) #Effect sizes and power
 broom::glance(nocov) #Fit statistics
 
 broom::glance(lm(PP ~ z1, LAPN_attitudes_scores_partA)) #Look at relationship between attitude scores and correct responses, for Part A of questionnaire
 ggplot(LAPN_attitudes_scores_partA, aes(x = z1, y = PP)) + geom_point(alpha = 1/10) + geom_smooth(method = "loess", color = "red") + geom_smooth(method = "lm", color = "blue") #Plot relationship between attitude scores and correct responses, for Part A of questionnaire
-broom::glance(lm(PP ~ z1, LAPN_attitudes_scores_partB)) #Look at relationship between attitude scores and correct responses, for Part A of questionnaire
+broom::glance(lm(PP ~ z1, LAPN_attitudes_scores_partB)) #Look at relationship between attitude scores and correct responses, for Part B of questionnaire
 ggplot(LAPN_attitudes_scores_partB, aes(x = z1, y = PP)) + geom_point(alpha = 1/10) + geom_smooth(method = "loess", color = "red") + geom_smooth(method = "lm", color = "blue") #Plot relationship between attitude scores and correct responses, for Part B of questionnaire
 
 
